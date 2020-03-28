@@ -24,6 +24,12 @@ npm run lint
 
 This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[45a3e22](https://github.com/SimulatedGREG/electron-vue/tree/45a3e224e7bb8fc71909021ccfdcfec0f461f634) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
 
+# 模板下载太慢
+cnpm install simulatedgreg/electron-vue --save-dev
+
+# 创建新项目
+vue init simulatedgreg/electron-vue evtest
+
 # 使用electron-builder 相关命令
 64位:
 npm run dist64
