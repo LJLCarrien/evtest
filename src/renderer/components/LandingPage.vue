@@ -9,7 +9,7 @@
         <input-number
           :value="1"
           :max-num="Number.MAX_VALUE"
-          :min-num="Number.MIN_VALUE"
+          :min-num="0"
           ref="rightSide_inpunumber"
         ></input-number>
       </div>
@@ -24,15 +24,30 @@ import InputNumber from "./Basic/InputNumber";
 export default {
   name: "landing-page",
   components: { SystemInformation, InputNumber },
+  data() {
+    return {
+      oldclientY: -1,
+    };
+  },
   methods: {
     pageMouseUp() {
       // console.log("pageMouseUp");
-      this.$refs.rightSide_inpunumber.clearTimeInterval();
+      this.$refs.rightSide_inpunumber.buttonMouseup();
     },
-    pageMouseMove(e){
-
-      // this.$refs.rightSide_inpunumber.clearTimeInterval();
-    }
+    pageMouseMove(e) {
+      let offsetY = e.clientY - this.oldclientY;
+      let flag = 0;
+      if (offsetY > 0) {
+        flag = 1;
+      } else if (offsetY < 0) {
+        flag = -1;
+      }
+      this.oldclientY = e.clientY;
+      if (offsetY != 0 && this.$refs.rightSide_inpunumber.isClickButton) {
+        offsetY = Math.abs(offsetY);
+        this.$refs.rightSide_inpunumber.updateOffset(flag, offsetY);
+      }
+    },
   },
 };
 </script>
