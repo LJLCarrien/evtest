@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -20,7 +20,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         height: 563,
         useContentSize: true,
-        width: 1000
+        width: 1000,
     })
 
     mainWindow.loadURL(winURL)
@@ -63,3 +63,21 @@ app.on('ready', () => {
   if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
 })
  */
+
+var nano = require('nanomsg')
+var s = nano.socket('req')
+    //连接C++程序地址
+s.connect('tcp://127.0.0.1:12345')
+s.send('hello c')
+
+let index = 0;
+ipcMain.on('clickStartBtn', (e) => {
+    s.send('clickStartBtn: ' + index);
+    console.log('clickStartBtn: ' + index);
+    index++;
+});
+ipcMain.on('clickEndBtn', (e) => {
+    s.send('clickEndBtn: ' + index);
+    console.log('clickEndBtn: ' + index)
+    index++;
+});

@@ -59,3 +59,11 @@ Use lint with EsLint ? No （对新手不友好，我选了no)
 参考 [VUE长按事件](https://www.cnblogs.com/clm960227/p/7685758.html)
 
 参考 [隐藏input type=number元素，右侧的上下箭头](https://www.imqianduan.com/css/37.html)
+
+应用2 electron与c++应用交互
+``` bash
+npm install --save-dev electron-rebuild
+npm install --save nanomsg
+```
+过程 https://blog.csdn.net/sinat_29158831/article/details/108235419
+参考 [从零开始实现Electron应用与C++应用交互](https://www.jianshu.com/p/ea9a1c6088ca)

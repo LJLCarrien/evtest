@@ -13,6 +13,8 @@
           ref="rightSide_inpunumber"
         ></input-number>
       </div>
+      <input type="button" value="开始" @click="clickStartBtn" />
+      <input type="button" value="结束" @click="clickEndBtn" />
     </main>
   </div>
 </template>
@@ -30,6 +32,12 @@ export default {
     };
   },
   methods: {
+    clickStartBtn() {
+      this.$electron.ipcRenderer.send("clickStartBtn");
+    },
+    clickEndBtn() {
+      this.$electron.ipcRenderer.send("clickEndBtn");
+    },
     pageMouseUp() {
       // console.log("pageMouseUp");
       this.$refs.rightSide_inpunumber.buttonMouseup();
