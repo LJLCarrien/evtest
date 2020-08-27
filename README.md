@@ -67,3 +67,5 @@ npm install --save nanomsg
 ```
 过程 https://blog.csdn.net/sinat_29158831/article/details/108235419
 参考 [从零开始实现Electron应用与C++应用交互](https://www.jianshu.com/p/ea9a1c6088ca)
+* c++测试工程用的nanomsg库 是下载源码在cmkae 选vs2015 64位编译出的动态库
+* c++测试工程是用vs2017（工具集用的是Visual Studio 2017 (v141) ）创建的控制台应用项目
