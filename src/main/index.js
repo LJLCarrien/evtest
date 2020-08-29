@@ -1,5 +1,5 @@
-import { app, BrowserWindow } from 'electron'
-
+import { app, BrowserWindow, remote } from 'electron'
+// import testDll from './testDll'
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -63,3 +63,22 @@ app.on('ready', () => {
   if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
 })
  */
+
+var ffi = require('ffi');
+var path = require('path');
+
+var dllPath = path.resolve('testdll\\TESTDLL');
+console.log("--------------------------------------: " + dllPath);
+
+const lib = ffi.Library(dllPath, {
+    'foo': [
+        'int', ['int'],
+    ],
+    'Add': ['double', ['double', 'double'], ],
+});
+
+var result = lib.Add('1.0', '2.0');
+console.log(result);
+var result = lib.foo('1111');
+console.log(result);
+// console.log(mydll);
