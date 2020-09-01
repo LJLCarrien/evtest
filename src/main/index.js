@@ -63,3 +63,8 @@ app.on('ready', () => {
   if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
 })
  */
+
+const addon = require('../../addon/addon.node');
+
+console.log(addon.hello1());
+console.log(addon.addOne(2));
