@@ -66,5 +66,5 @@ app.on('ready', () => {
 
 const addon = require('../../addon/addon.node');
 
-console.log(addon.hello1());
+console.log(addon.hello());
 console.log(addon.addOne(2));
