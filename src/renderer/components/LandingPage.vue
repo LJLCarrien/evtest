@@ -12,6 +12,7 @@
           :min-num="0"
           ref="rightSide_inpunumber"
         ></input-number>
+        <webview plugins :src="webviewUrl" id="simpleWebviewTag"></webview>
       </div>
     </main>
   </div>
@@ -27,7 +28,33 @@ export default {
   data() {
     return {
       oldclientY: -1,
+      webviewUrl: "http://127.0.0.1:8081/index_ws.html",
     };
+  },
+  created() {
+    // var ws = new WebSocket("ws://127.0.0.1:8001");
+
+    // ws.onopen = function (evt) {
+    //   console.log("Connection open ...");
+    //   ws.send("Hello WebSockets!!!!!!!!!!!!");
+    // };
+
+    // ws.onmessage = function (evt) {
+    //   console.log("Received Message: " + evt.data);
+    //   setTimeout(() => {
+    //     ws.close();
+    //   }, 2000);
+    // };
+
+    // ws.onclose = function (evt) {
+    //   console.log("Connection closed.");
+    // };
+  },
+  mounted() {
+    // this.webview = document.getElementById("simpleWebviewTag");
+    // this.$electron.ipcRenderer.on("openWebviewDevTools", () => {
+    //   this.webview.openDevTools({ mode: "detach" });
+    // });
   },
   methods: {
     pageMouseUp() {
