@@ -1,51 +1,177 @@
 <template>
-  <div id="wrapper" @mouseup="pageMouseUp" @mousemove="pageMouseMove">
+  <div id="wrapper">
     <main>
       <div class="left-side">
         <system-information></system-information>
       </div>
 
       <div class="right-side">
-        <input-number
-          :value="1"
-          :max-num="Number.MAX_VALUE"
-          :min-num="0"
-          ref="rightSide_inpunumber"
-        ></input-number>
+        <!-- 使用transition-group -->
+        <draggable
+          class="vueDragwrapper"
+          v-model="list"
+          ghost-class="ghost"
+          @start="drag = true"
+          @end="drag = false"
+        >
+          <transition-group
+            class="vueDragGroup"
+            type="transition"
+            :name="'flip-list'"
+          >
+            <div v-for="item in list" :key="item" class="vueDrag">
+              <p>{{ item }}</p>
+            </div>
+          </transition-group>
+        </draggable>
+
+        <!-- 研究disabled 、sort -->
+        <div class="btnGroup">
+          <div class="btn" @click="onClickBtn('disabled')">
+            :disabled="{{ isDisabled }}"
+          </div>
+          <div class="btn" @click="onClickBtn('sort')">
+            :sort="{{ bChange }}"
+          </div>
+          <div class="btn" @click="onClickBtn('add')">添加</div>
+          <input v-model="delIndex" />
+          <div class="btn" @click="onClickBtn('del')">删除</div>
+        </div>
+        <draggable
+          :list="listtmp"
+          :disabled="isDisabled"
+          :sort="bChange"
+          class="list-group"
+          ghost-class="ghost"
+          @start="onStart"
+          @end="onEnd"
+        >
+          <div
+            class="list-group-item"
+            v-for="element in listtmp"
+            :key="element.name"
+          >
+            {{ element.name }}
+          </div>
+        </draggable>
+
+        <!-- 研究group
+        :group="{ name: 'people', pull: 'clone', put: false }" 复制到另一个组
+         -->
+        <draggable
+          class="list-group"
+          :list="list1"
+          :group="{ name: 'people', pull: 'clone', put: false }"
+          :clone="cloneDog"
+          @change="log"
+        >
+          <div
+            class="list-group-item-big eng"
+            v-for="(element, index) in list1"
+            :key="element.name"
+          >
+            name:{{ element.name }} index: {{ index }} id:{{ element.id }}
+          </div>
+        </draggable>
+
+        <draggable
+          class="list-group"
+          :list="list2"
+          group="people"
+          @change="log"
+        >
+          <div
+            class="list-group-item-big num"
+            v-for="(element, index) in list2"
+            :key="element.name"
+          >
+            name:{{ element.name }} index: {{ index }} id:{{ element.id }}
+          </div>
+        </draggable>
       </div>
     </main>
   </div>
 </template>
 
 <script>
+import draggable from "vuedraggable";
 import SystemInformation from "./LandingPage/SystemInformation";
 import InputNumber from "./Basic/InputNumber";
 
 export default {
   name: "landing-page",
-  components: { SystemInformation, InputNumber },
+  components: { SystemInformation, InputNumber, draggable },
   data() {
     return {
       oldclientY: -1,
+      list: [1, 2, 34, 4, 54, 5],
+      drag: false,
+      addIndex: 3,
+      delIndex: 0,
+      listtmp: [
+        { name: "t0", id: 0 },
+        { name: "t1", id: 1 },
+        { name: "t2", id: 2 },
+      ],
+      isDisabled: false,
+      bChange: true,
+      list1: [
+        { name: "a", id: 1 },
+        { name: "b", id: 2 },
+        { name: "c", id: 3 },
+        { name: "d", id: 4 },
+      ],
+      list2: [
+        { name: "5", id: 5 },
+        { name: "6", id: 6 },
+        { name: "7", id: 7 },
+      ],
+      idGlobal: 8,
     };
   },
+  updated() {
+    console.log("updated", this.list);
+    // this.list1.forEach((item) => {
+    //   console.log(item.id, item.name);
+    // });
+  },
   methods: {
-    pageMouseUp() {
-      // console.log("pageMouseUp");
-      this.$refs.rightSide_inpunumber.buttonMouseup();
+    onStart: function (evt) {
+      console.log("onStart", evt);
     },
-    pageMouseMove(e) {
-      let offsetY = e.clientY - this.oldclientY;
-      let flag = 0;
-      if (offsetY > 0) {
-        flag = 1;
-      } else if (offsetY < 0) {
-        flag = -1;
-      }
-      this.oldclientY = e.clientY;
-      if (offsetY != 0 && this.$refs.rightSide_inpunumber.isClickButton) {
-        offsetY = Math.abs(offsetY);
-        this.$refs.rightSide_inpunumber.updateOffset(flag, offsetY);
+    onEnd: function (evt) {
+      console.log("onEnd", evt);
+    },
+    log: function (evt) {
+      window.console.log(evt);
+    },
+    cloneDog({ name, id }) {
+      return {
+        id: this.idGlobal++,
+        name: `${name},${id}`,
+      };
+    },
+    onClickBtn(type) {
+      switch (type) {
+        case "disabled":
+          this.isDisabled = !this.isDisabled;
+          break;
+        case "sort":
+          this.bChange = !this.bChange;
+          break;
+        case "add":
+          this.listtmp.push({
+            name: "t " + this.addIndex,
+            id: this.addIndex,
+          });
+          this.addIndex++;
+          break;
+        case "del":
+          console.log("del", this.delIndex);
+          this.listtmp.splice(this.delIndex, 1);
+          break;
+        default:
+          break;
       }
     },
   },
@@ -101,5 +227,59 @@ main > div {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 6px;
+}
+
+.vueDragwrapper,
+.vueDragGroup {
+  display: flex;
+}
+.vueDrag {
+  width: 50px;
+  height: 50px;
+  background-color: #42b983;
+  color: #ffffff;
+  margin-right: 10px;
+}
+
+.list-group {
+  display: flex;
+  margin-top: 5px;
+}
+
+.list-group-item {
+  width: 50px;
+  height: 50px;
+  background-color: #555;
+  color: #ffffff;
+  margin-right: 10px;
+}
+.list-group-item-big {
+  width: 70px;
+  height: 70px;
+  color: #ffffff;
+  margin-right: 10px;
+  background-color: #999;
+}
+.ghost {
+  opacity: 0.4;
+}
+
+.btnGroup {
+  margin-top: 5px;
+  display: flex;
+}
+.btn {
+  width: auto;
+  height: 50px;
+  background-color: firebrick;
+  color: #ffffff;
+  margin-right: 5px;
+}
+
+.flip-list-move {
+  transition: transform 0.2s;
+}
+.no-move {
+  transition: transform 0s;
 }
 </style>
