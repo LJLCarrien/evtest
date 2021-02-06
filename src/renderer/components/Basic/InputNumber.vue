@@ -163,6 +163,7 @@ export default {
     buttonMouseup() {
       this.isClickButton = false;
       this.clearTimeInterval();
+      this.$emit('test1')
     },
     clearTimeInterval() {
       if (this.timeInterval == null) return;
