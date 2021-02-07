@@ -1,17 +1,26 @@
 <template>
-  <div id="wrapper" @mouseup="pageMouseUp" @mousemove="pageMouseMove">
+  <div id="wrapper">
     <main>
       <div class="left-side">
         <system-information></system-information>
       </div>
 
       <div class="right-side">
-        <input-number
-          :value="1"
-          :max-num="Number.MAX_VALUE"
-          :min-num="0"
-          ref="rightSide_inpunumber"
-        ></input-number>
+        <div class="btnGroup">
+          <div class="btn" @click="onClickBtn('add')">增加</div>
+          <input v-model="delIndex" />
+          <div class="btn" @click="onClickBtn('del')">删除</div>
+        </div>
+        <div class="color-list">
+          <div
+            class="color-item"
+            v-for="color in colors"
+            v-dragging="{ item: color, list: colors, group: 'color' }"
+            :key="color.text"
+          >
+            {{ color.text }}
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -26,26 +35,42 @@ export default {
   components: { SystemInformation, InputNumber },
   data() {
     return {
-      oldclientY: -1,
+      delIndex: 0,
+      colorIndex: 10,
+      colors: [
+        {
+          text: "Aquamarine",
+        },
+        {
+          text: "Hotpink",
+        },
+      ],
     };
   },
+  mounted() {
+    this.$dragging.$on("dragged", (data) => {
+      console.log("dragged-----------------");
+      console.log(data.draged.text);
+      // console.log(value.list);
+      // console.log(value);
+    });
+    this.$dragging.$on("dragend", () => {
+      console.log("dragend-----------------");
+    });
+  },
   methods: {
-    pageMouseUp() {
-      // console.log("pageMouseUp");
-      this.$refs.rightSide_inpunumber.buttonMouseup();
-    },
-    pageMouseMove(e) {
-      let offsetY = e.clientY - this.oldclientY;
-      let flag = 0;
-      if (offsetY > 0) {
-        flag = 1;
-      } else if (offsetY < 0) {
-        flag = -1;
-      }
-      this.oldclientY = e.clientY;
-      if (offsetY != 0 && this.$refs.rightSide_inpunumber.isClickButton) {
-        offsetY = Math.abs(offsetY);
-        this.$refs.rightSide_inpunumber.updateOffset(flag, offsetY);
+    onClickBtn: function (type) {
+      switch (type) {
+        case "add":
+          this.colors.push({ text: this.colorIndex });
+          this.colorIndex++;
+          break;
+        case "del":
+          this.colors.splice(this.delIndex, 1);
+          break;
+
+        default:
+          break;
       }
     },
   },
@@ -101,5 +126,30 @@ main > div {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 6px;
+}
+
+.color-list {
+  display: flex;
+}
+.color-item {
+  width: 50px;
+  height: 50px;
+  background-color: #555;
+  color: #fff;
+  margin-right: 5px;
+}
+
+.btnGroup {
+  display: flex;
+  margin-bottom: 10px;
+}
+.btn {
+  width: 60px;
+  height: 60px;
+  background-color: #555;
+  color: #fff;
+  margin-right: 10px;
+  text-align: center;
+  line-height: 25px;
 }
 </style>
