@@ -7,27 +7,30 @@
           :value="1"
           :min-num="0"
           :max-num="Number.MAX_VALUE"
+          :id="-1"
           ref="rightSide_inpunumber"
         ></input-number>
       </div>
 
       <div class="right-side">
-        <RecycleScroller
-          class="scroller"
-          :items="list"
-          :item-size="40"
-          :key-field="item"
-          :buffer="0"
-          v-slot="{ item }"
-        >
-          <input-number
-            :value="item.value"
-            :id="item.id"
-            :min-num="0"
-            :max-num="Number.MAX_VALUE"
-            @update-size="updatSize"
-          ></input-number>
-        </RecycleScroller>
+        <DynamicScroller class="scroller" :items="list" :min-item-size="40">
+          <template v-slot="{ item, index, active }">
+            <DynamicScrollerItem
+              :item="item"
+              :active="active"
+              :size-dependencies="[item.value]"
+              :data-index="index"
+            >
+              <input-number
+                :value="item.value"
+                :id="item.id"
+                :min-num="0"
+                :max-num="Number.MAX_VALUE"
+                @update-size="updatSize"
+              ></input-number>
+            </DynamicScrollerItem>
+          </template>
+        </DynamicScroller>
       </div>
     </main>
   </div>
@@ -36,12 +39,12 @@
 <script>
 import SystemInformation from "./LandingPage/SystemInformation";
 import InputNumber from "./Basic/InputNumber";
-import { RecycleScroller } from "vue-virtual-scroller";
+import { RecycleScroller,DynamicScroller,DynamicScrollerItem } from "vue-virtual-scroller";
 import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 
 export default {
   name: "landing-page",
-  components: { SystemInformation, InputNumber, RecycleScroller },
+  components: { SystemInformation, InputNumber, RecycleScroller,DynamicScroller,DynamicScrollerItem },
   data() {
     return {
       oldclientY: -1,
@@ -76,12 +79,12 @@ export default {
 
     /**动态修改高度 */
     updatSize(offset, itemId) {
-      let curHeight=document.getElementById(itemId).clientHeight;
-      curHeight+=offset;
+      let curHeight = document.getElementById(itemId).clientHeight;
+      curHeight += offset;
       // document.getElementById(itemId).style=`height: ${curHeight}px`;
       console.log(`height: ${curHeight}px`);
-      console.log(typeof(curHeight));
-      document.getElementById(itemId).style=`height: ${curHeight}px`;
+      console.log(typeof curHeight);
+      document.getElementById(itemId).style = `height: ${curHeight}px`;
     },
   },
 };

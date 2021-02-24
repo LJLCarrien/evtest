@@ -53,7 +53,7 @@ export default {
   props: {
     id: {
       type: Number,
-      default: 0,
+      default: -1,
     },
     value: {
       type: Number,
