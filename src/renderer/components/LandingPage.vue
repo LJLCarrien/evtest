@@ -3,15 +3,31 @@
     <main>
       <div class="left-side">
         <system-information></system-information>
+        <input-number
+          :value="1"
+          :min-num="0"
+          :max-num="Number.MAX_VALUE"
+          ref="rightSide_inpunumber"
+        ></input-number>
       </div>
 
       <div class="right-side">
-        <input-number
-          :value="1"
-          :max-num="Number.MAX_VALUE"
-          :min-num="0"
-          ref="rightSide_inpunumber"
-        ></input-number>
+        <RecycleScroller
+          class="scroller"
+          :items="list"
+          :item-size="40"
+          :key-field="item"
+          :buffer="0"
+          v-slot="{ item }"
+        >
+          <input-number
+            :value="item.value"
+            :id="item.id"
+            :min-num="0"
+            :max-num="Number.MAX_VALUE"
+            @update-size="updatSize"
+          ></input-number>
+        </RecycleScroller>
       </div>
     </main>
   </div>
@@ -20,14 +36,23 @@
 <script>
 import SystemInformation from "./LandingPage/SystemInformation";
 import InputNumber from "./Basic/InputNumber";
+import { RecycleScroller } from "vue-virtual-scroller";
+import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 
 export default {
   name: "landing-page",
-  components: { SystemInformation, InputNumber },
+  components: { SystemInformation, InputNumber, RecycleScroller },
   data() {
     return {
       oldclientY: -1,
+      list: [],
     };
+  },
+  created: function () {
+    for (let index = 0; index < 30; index++) {
+      let info = { id: index, value: index };
+      this.list.push(info);
+    }
   },
   methods: {
     pageMouseUp() {
@@ -47,6 +72,16 @@ export default {
         offsetY = Math.abs(offsetY);
         this.$refs.rightSide_inpunumber.updateOffset(flag, offsetY);
       }
+    },
+
+    /**动态修改高度 */
+    updatSize(offset, itemId) {
+      let curHeight=document.getElementById(itemId).clientHeight;
+      curHeight+=offset;
+      // document.getElementById(itemId).style=`height: ${curHeight}px`;
+      console.log(`height: ${curHeight}px`);
+      console.log(typeof(curHeight));
+      document.getElementById(itemId).style=`height: ${curHeight}px`;
     },
   },
 };
@@ -101,5 +136,16 @@ main > div {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 6px;
+}
+
+.scroller {
+  height: 150px;
+}
+
+.user {
+  height: 32%;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
 }
 </style>

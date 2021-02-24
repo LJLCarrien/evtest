@@ -1,5 +1,5 @@
 <template>
-  <div class="inputNumber-wrapper">
+  <div class="inputNumber-wrapper" :id="itemId">
     <input
       class="numboxInput"
       :style="inputStyle"
@@ -17,7 +17,9 @@
       @mouseleave="inputMouseLeave"
       @mouseout="buttonMouseOut"
       @mouseup="buttonMouseup()"
-    >-</button>
+    >
+      -
+    </button>
     <button
       id="addBtn"
       :class="addBtnClass"
@@ -26,7 +28,9 @@
       @mouseleave="inputMouseLeave"
       @mouseout="buttonMouseOut"
       @mouseup="buttonMouseup()"
-    >+</button>
+    >
+      +
+    </button>
   </div>
 </template>
 
@@ -47,6 +51,10 @@ export default {
   },
   components: {},
   props: {
+    id: {
+      type: Number,
+      default: 0,
+    },
     value: {
       type: Number,
       default: 10,
@@ -65,9 +73,18 @@ export default {
     },
   },
   watch: {
+    value(val) {
+      // console.log(val);
+      this.currentVal = val;
+    },
     currentVal(val) {
       // console.log("子组件currentVal值改变: " + val);
       this.$emit("input", val);
+    },
+  },
+  computed: {
+    itemId() {
+      return "inpuNumberId_"+this.id;
     },
   },
   methods: {
@@ -114,6 +131,7 @@ export default {
      * offset ：一次加/减的值
      */
     updateOffset(flag, offset) {
+      this.$emit("update-size", flag*offset,this.itemId);
       let isCanSet = false;
       if (flag > 0) {
         this.currentVal =
@@ -133,13 +151,9 @@ export default {
     },
     updateCursor() {
       this.addBtnClass =
-        this.currentVal < this.maxNum
-          ? "btn"
-          : "btn btn_is-disabled";
+        this.currentVal < this.maxNum ? "btn" : "btn btn_is-disabled";
       this.reduceBtnClass =
-        this.currentVal > this.minNum
-          ? "btn"
-          : "btn btn_is-disabled";
+        this.currentVal > this.minNum ? "btn" : "btn btn_is-disabled";
     },
     buttonClick(flag) {
       this.updateOffset(flag, this.step);
