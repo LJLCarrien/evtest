@@ -13,7 +13,7 @@
       </div>
 
       <div class="right-side">
-        <DynamicScroller class="scroller" :items="list" :min-item-size="40">
+        <DynamicScroller class="scroller" :items="list" :min-item-size="40" @resize="resizeScroller">
           <template v-slot="{ item, index, active }">
             <DynamicScrollerItem
               :item="item"
@@ -58,6 +58,9 @@ export default {
     }
   },
   methods: {
+    resizeScroller(){
+      console.log('----------------------------------resizeScroller');
+    },
     pageMouseUp() {
       // console.log("pageMouseUp");
       this.$refs.rightSide_inpunumber.buttonMouseup();
@@ -80,10 +83,9 @@ export default {
     /**动态修改高度 */
     updatSize(offset, itemId) {
       let curHeight = document.getElementById(itemId).clientHeight;
-      curHeight += offset;
+      curHeight += 10*offset;
       // document.getElementById(itemId).style=`height: ${curHeight}px`;
       console.log(`height: ${curHeight}px`);
-      console.log(typeof curHeight);
       document.getElementById(itemId).style = `height: ${curHeight}px`;
     },
   },
